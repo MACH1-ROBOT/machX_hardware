@@ -1,0 +1,6 @@
+[submodule "external/gpiozero_plus"]
+	path = external/gpiozero_plus
+	url = git@github.com:jrendon102/gpiozero_plus.git
+[submodule "external/camera_driver"]
+	path = external/camera_driver
+	url = git@github.com:jrendon102/camera_driver.git
