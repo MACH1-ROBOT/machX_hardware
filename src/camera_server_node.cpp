@@ -14,6 +14,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
+#include <ros_utils/ros_utils.h>
 
 #define encoding "bgr8"
 #define API      cv::VideoCaptureAPIs::CAP_V4L2
@@ -35,7 +36,14 @@ class CameraServerNode : protected Camera
         : Camera(name, type, index, fps), camera(GetCameraSpecs()), imgTr(nh), videoCap(nullptr)
     {
         imgPub = imgTr.advertise("/camera/raw_image", 10);
-        SendCameraFeeds();
+        try
+        {
+            SendCameraFeeds();
+        }
+        catch (std::exception &e)
+        {
+            throw;
+        }
     };
 
     // Destructor
@@ -53,87 +61,58 @@ class CameraServerNode : protected Camera
 
         bool isFirstFrame = true;   // Flag to track the first frame
         cv::namedWindow(camera.name);
-
-        while (ros::ok())
+        try
         {
-            if (!videoCap)
+            while (ros::ok())
             {
-                videoCap = std::make_shared<cv::VideoCapture>(camera.index, API);
-                ROS_DEBUG("%s::%s", __func__, CameraUtils::DumpCamInfo(camera).c_str());
-            }
+                if (!videoCap)
+                {
+                    videoCap = std::make_shared<cv::VideoCapture>(camera.index, API);
+                    ROS_DEBUG("%s::%s", __func__, CameraUtils::DumpCamInfo(camera).c_str());
+                }
+                try
+                {
+                    frame = CaptureFrame(*videoCap, camera.index);
+                }
+                catch (std::exception &e)
+                {
+                    videoCap->release();
+                    ROS_INFO("%s()::%s", __func__, e.what());
+                    throw;   // Rethrow exception
+                }
+                if (isFirstFrame)
+                {
+                    ROS_INFO("%s::[%s] feed is running.", __func__, camera.name.c_str());
+                    isFirstFrame = false;
+                }
 
-            try
-            {
-                frame = CaptureFrame(*videoCap, camera.index);
+                // Convert cv::Mat to ROS message
+                imgMsg = cv_bridge::CvImage(std_msgs::Header(), encoding, frame).toImageMsg();
+                imgPub.publish(imgMsg);
+                ros::Rate(camera.fps).sleep();
             }
-            catch (std::exception &e)
-            {
-                videoCap->release();
-                ROS_ERROR("%s::Exception caught:%s", __func__, e.what());
-                throw;   // rethrow exception
-            }
-
-            if (isFirstFrame)
-            {
-                ROS_INFO("%s::[%s] feed is running.", __func__, camera.name.c_str());
-                isFirstFrame = false;
-            }
-
-            // Convert cv::Mat to ROS message
-            imgMsg = cv_bridge::CvImage(std_msgs::Header(), encoding, frame).toImageMsg();
-            imgPub.publish(imgMsg);
-            ros::Rate(camera.fps).sleep();
+        }
+        catch (std::exception &e)
+        {
+            ROS_INFO("%s", e.what());
+            throw;   // Rethrow exception
         }
         ROS_DEBUG("%s::Releasing [%s]", __func__, camera.name.c_str());
         videoCap->release();
     }
 };
 
-// Get ROS param
-template <typename T>
-T GetParam(const std::string &paramName)
-{
-    ROS_DEBUG("%s::Fetching camera parameter:[%s]", __func__, paramName.c_str());
-    T value;
-    if (!ros::param::get(paramName, value))
-    {
-        ROS_ERROR("%s::Failed to retrieve parameter:[%s]", __func__, paramName.c_str());
-        throw std::invalid_argument("Failed to retrieve parameter");
-    }
-    ROS_DEBUG("%s::Success.", __func__);
-    return value;
-}
-
-// Configure ROS CONSOLE logging level
-void ConfigureLogLevel(int argc, char **argv)
-{
-    // Set the default log level to INFO
-    ros::console::Level logLevel = ros::console::levels::Info;
-
-    // Check if there are command-line arguments
-    if (argc > 1)
-    {
-        std::string logLevelArg = argv[1];
-        if (logLevelArg == "--debug")
-        {
-            logLevel = ros::console::levels::Debug;
-        }
-    }
-
-    // Set the log level for ROS messages
-    ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, logLevel);
-}
-
 int main(int argc, char **argv)
 {
     try
     {
         ros::init(argc, argv, "camera_server_node");
-        ConfigureLogLevel(argc, argv);
-        CameraServerNode camera(GetParam<std::string>(CameraUtils::cameraParams["NAME"]),
-                                GetParam<std::string>(CameraUtils::cameraParams["TYPE"]),
-                                GetParam<int>(CameraUtils::cameraParams["INDEX"]),
-                                GetParam<int>(CameraUtils::cameraParams["FPS"]));
+        ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
+                                       RosUtils::ConfigureLogLevel(argc, argv));
+        CameraServerNode camera(RosUtils::GetParam<std::string>(CameraUtils::cameraParams["NAME"]),
+                                RosUtils::GetParam<std::string>(CameraUtils::cameraParams["TYPE"]),
+                                RosUtils::GetParam<int>(CameraUtils::cameraParams["INDEX"]),
+                                RosUtils::GetParam<int>(CameraUtils::cameraParams["FPS"]));
     }
     catch (std::exception &e)
     {

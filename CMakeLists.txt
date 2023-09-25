@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   roscpp
   rospy
+  ros_utils
   sensor_msgs
   std_msgs
 )
@@ -18,8 +19,7 @@ find_package(OpenCV 4 REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES camera_driver
-  CATKIN_DEPENDS roscpp std_msgs
+  CATKIN_DEPENDS cv_bridge image_transport roscpp rospy sensor_msgs std_msgs
 )
 
 include_directories(

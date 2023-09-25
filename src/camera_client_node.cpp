@@ -42,20 +42,24 @@ class CameraClientNode
 
     void CompressedImgCb(const sensor_msgs::CompressedImageConstPtr &img_msg)
     {
-        ROS_DEBUG("%s::New frame recieved.", __func__);
+        ROS_INFO("%s::New frame received.", __func__);
         try
         {
             if (!frame)
             {
+                ROS_INFO("%s::creating new frame", __func__);
                 frame = std::make_unique<cv::Mat>();
             }
+            ROS_INFO("%s::compress message", __func__);
             compMsg = cv_bridge::toCvCopy(img_msg, "bgr8")->toImageMsg();
+
+            ROS_INFO("%s::storing compress message", __func__);
             *frame = cv_bridge::toCvShare(compMsg, "bgr8")->image;
         }
         catch (cv_bridge::Exception &e)
         {
-            ROS_ERROR("%s::Unable to perform conversion format:[%s]", __func__,
-                      compMsg->encoding.c_str());
+            // ROS_ERROR("%s::Unable to perform conversion format:[%s]", __func__,
+            //           compMsg->encoding.c_str());
             throw std::runtime_error("Unable to perform the conversion from the provided image");
         }
     };
@@ -106,7 +110,7 @@ class CameraClientNode
             throw;   // rethrow exception
         }
         cv::destroyAllWindows();
-        ROS_DEBUG("%s::All windows destroyed.", __func__);
+        ROS_INFO("%s::All windows desrioyed.", __func__);
     };
 };
 
