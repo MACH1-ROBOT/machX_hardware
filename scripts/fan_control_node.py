@@ -64,27 +64,6 @@ class FanController(Fan):
         return enable_fanResponse(message)
 
 
-def get_param_value(param_name: str):
-    """
-    Get a ROS parameter value.
-
-    Args:
-        `param_name (str)`: The name of the ROS parameter to retrieve.
-
-    Returns:
-        `object`: The value of the ROS parameter.
-
-    Raises:
-        `KeyError`: If the ROS parameter cannot be retrieved.
-    """
-    rospy.logdebug(f"{get_param.__name__}()::Fetching fan parameter:[{param_name}]")
-    try:
-        return rospy.get_param(param_name)
-    except KeyError as exc:
-        rospy.logdebug(f"{get_param.__name__}()::Failed to retrieve parameter:[{param_name}]")
-        raise KeyError("Failed to retrieve parameter") from exc
-
-
 if __name__ == "__main__":
     try:
         rospy.init_node("fan_control_node")
