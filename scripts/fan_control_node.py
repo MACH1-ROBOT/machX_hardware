@@ -35,8 +35,8 @@ class FanController(Fan):
         Initializes the FanController instance.
         """
         super().__init__(fan_pin, initial_enabled)
-        self.__fan_service = rospy.Service("enable_fan", enable_fan, self.fan_callback)
-        self.__current_fan_state = initial_enabled
+        self._fan_service = rospy.Service("enable_fan", enable_fan, self.fan_callback)
+        self._current_fan_state = initial_enabled
 
     def fan_callback(self, state) -> enable_fanResponse:
         """
@@ -50,15 +50,17 @@ class FanController(Fan):
         """
         message = "Fan not toggled"
 
-        if state.enabled != self.__current_fan_state:
+        if state.enabled != self._current_fan_state:
             if state.enabled:
                 self.set_fan_state(state.enabled)
                 message = "Fan toggled ON."
             else:
                 self.set_fan_state(state.enabled)
                 message = "Fan toggled OFF"
-            rospy.loginfo(f"{self.fan_callback.__name__}()::FanEnabled:[{state.enabled}]")
-            self.__current_fan_state = state.enabled
+            rospy.loginfo(
+                f"{self.fan_callback.__name__}()::FanEnabled:[{state.enabled}]"
+            )
+            self._current_fan_state = state.enabled
         else:
             rospy.logdebug(f"{self.fan_callback.__name__}()::{message}")
         return enable_fanResponse(message)

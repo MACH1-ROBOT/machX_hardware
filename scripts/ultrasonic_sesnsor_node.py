@@ -39,14 +39,18 @@ class UltraSonicSensor(Ultrasonic):
         `sensor_msg (mach1_msgs.msg.Collision)`: A message object for storing sensor data.
     """
 
-    def __init__(self, echo_pin: int, trig_pin: int, max_distance: float, threshold: float) -> None:
+    def __init__(
+        self, echo_pin: int, trig_pin: int, max_distance: float, threshold: float
+    ) -> None:
         """
         Initializes the UltraSonicSensor instance.
         """
         super().__init__(echo_pin, trig_pin, max_distance, threshold)
-        self.ultrasonic_pub = rospy.Publisher("/ultrasonic_status", Collision, queue_size=1)
-        self.sensor_msg = Collision()
-        self.sensor_msg.threshold = threshold
+        self._ultrasonic_pub = rospy.Publisher(
+            "/ultrasonic_status", Collision, queue_size=1
+        )
+        self._sensor_msg = Collision()
+        self._sensor_msg.threshold = threshold
 
         self.measure()
 
@@ -55,10 +59,12 @@ class UltraSonicSensor(Ultrasonic):
         Measures ultrasonic sensor data and publishes it
         """
         while not rospy.is_shutdown():
-            self.sensor_msg.distance = self.get_distance()
-            if self.sensor_msg.distance is not None:
-                rospy.loginfo(f"{self.measure.__name__}()::Distance: [{self.sensor_msg.distance:.3f}] meters")
-                self.ultrasonic_pub.publish(self.sensor_msg)
+            self._sensor_msg.distance = self.get_distance()
+            if self._sensor_msg.distance is not None:
+                rospy.loginfo(
+                    f"{self.measure.__name__}()::Distance: [{self._sensor_msg.distance:.3f}] meters"
+                )
+                self._ultrasonic_pub.publish(self._sensor_msg)
             rospy.Rate(60).sleep()
             rospy.spin()
 
