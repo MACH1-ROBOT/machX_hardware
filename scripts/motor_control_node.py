@@ -40,15 +40,17 @@ class MotorControl(MotorController):
         `motor_lock (threading.Lock)`: A thread lock for motor control.
     """
 
-    def __init__(self, left_motor: tuple, right_motor: tuple, curve_scale: float) -> None:
+    def __init__(
+        self, left_motor: tuple, right_motor: tuple, curve_scale: float
+    ) -> None:
         """
         Initializes the MotorControl instance.
         """
         super().__init__(left_motor, right_motor, curve_scale)
-        self.vel_sub = rospy.Subscriber("/vel_status", VelStatus, self.vel_callback)
-        self.linear_x = 0.0
-        self.angular_z = 0.0
-        self.motor_lock = Lock()
+        self._vel_sub = rospy.Subscriber("/vel_status", VelStatus, self.vel_callback)
+        self._linear_x = 0.0
+        self._angular_z = 0.0
+        self._motor_lock = Lock()
 
         self.drive()
 
@@ -59,18 +61,18 @@ class MotorControl(MotorController):
         Args:
             `vel (VelStatus)`: Velocity status message.
         """
-        with self.motor_lock:
-            self.linear_x = vel.twist_msg.linear.x
-            self.angular_z = vel.twist_msg.angular.z
+        with self._motor_lock:
+            self._linear_x = vel.twist_msg.linear.x
+            self._angular_z = vel.twist_msg.angular.z
 
     def drive(self) -> None:
         """
         Main motor control loop.
         """
         while not rospy.is_shutdown():
-            with self.motor_lock:
-                self.run(self.linear_x, self.angular_z)
-                self.linear_x = self.angular_z = 0.0
+            with self._motor_lock:
+                self.run(self._linear_x, self._angular_z)
+                self._linear_x = self._angular_z = 0.0
             rospy.Rate(20).sleep()
 
 
