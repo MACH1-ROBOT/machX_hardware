@@ -11,10 +11,12 @@
  * @copyright Copyright (c) 2023
  */
 #include <camera_driver/camera.h>
+#include <camera_driver/camera_utils.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <ros_utils/ros_utils.h>
+#include <std_msgs/Float32.h>
 
 #define encoding "bgr8"
 #define API      cv::VideoCaptureAPIs::CAP_V4L2
@@ -27,6 +29,8 @@ class CameraServerNode : protected Camera
     image_transport::ImageTransport imgTr;
     image_transport::Publisher imgPub;
     sensor_msgs::ImagePtr imgMsg;
+    ros::Publisher luminosityPub;
+    std_msgs::Float32 luminosityMsg;
     std::shared_ptr<cv::VideoCapture> videoCap;
     cv::Mat frame;
 
@@ -36,6 +40,7 @@ class CameraServerNode : protected Camera
         : Camera(name, type, index, fps), camera(GetCameraSpecs()), imgTr(nh), videoCap(nullptr)
     {
         imgPub = imgTr.advertise("/camera/raw_image", 10);
+        luminosityPub = nh.advertise<std_msgs::Float32>("/luminosity", 20);
         try
         {
             SendCameraFeeds();
@@ -86,9 +91,12 @@ class CameraServerNode : protected Camera
                     isFirstFrame = false;
                 }
 
-                // Convert cv::Mat to ROS message
                 imgMsg = cv_bridge::CvImage(std_msgs::Header(), encoding, frame).toImageMsg();
                 imgPub.publish(imgMsg);
+
+                luminosityMsg.data = CameraUtils::GetLuminosityValue(frame);
+                luminosityPub.publish(luminosityMsg);
+
                 ros::Rate(camera.fps).sleep();
             }
         }
