@@ -1,4 +1,6 @@
-# mach1_hardware ROS Package
+# MACH1 HARDWARE
+
+## Overview 
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
