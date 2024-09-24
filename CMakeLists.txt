@@ -1,11 +1,12 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(mach1_hardware)
+cmake_minimum_required(VERSION 3.8)
+project(machx_hardware VERSION 1.0.0)
 
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-)
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+
+ament_package()

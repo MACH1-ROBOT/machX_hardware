@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
-<package format="2">
-  <name>mach1_hardware</name>
-  <version>0.0.0</version>
-  <description>The mach1_hardware package</description>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>machx_hardware</name>
+  <version>1.0.0</version>
+  <description>The machx_hardware package</description>
   <maintainer email="julianrendon514@gmail.com">Julian Rendon</maintainer>
-  <license>MIT</license>
-  <author email="julianrendon514@gmail.com">Julian Rendon</author>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>rospy</build_export_depend>
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>rospy</exec_depend>
+  <license>GNU</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
