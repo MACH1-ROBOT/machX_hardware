@@ -1,26 +1,38 @@
-# Ignore build and compile output for C++
+# ROS 2 specific
 build/
-devel/
 install/
+log/
 
-# Ignore log and temporary files
-*.log
-*.tmp
-*.swp
-
-# Ignore Visual Studio Code settings
-.vscode/
-
-# Ignore ROS workspace settings
-*.workspace
-
-# Ignore user-specific ROS configuration
-~/.ros/
-
-# Ignore Python-specific build artifacts
+# Python specific
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*.so
+*.egg-info/
 
-# Ignore Python virtual environment
-venv/
+# CMake specific
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+
+# Compiled object files
+*.o
+*.obj
+*.so
+*.a
+
+# Other
+*.swp
+*.swo
+.DS_Store
+*.zip
+*.tar.gz
+*.tgz
+*.log
+
+# Editor specific
+.vscode/
+.idea/
+*.user
+*.sublime-workspace
+*.sublime-project
