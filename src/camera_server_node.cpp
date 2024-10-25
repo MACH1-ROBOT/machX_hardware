@@ -1,6 +1,6 @@
+#include "camera.h"
 #include <iostream>
 #include <rclcpp/rclcpp.hpp>
-// #include "camera.h"
 
 class CameraServerNode : public rclcpp::Node
 {
