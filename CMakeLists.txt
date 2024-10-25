@@ -13,6 +13,7 @@ find_package(OpenCV 4 REQUIRED)
 # Include OpenCV headers
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-ament_package()
-
 add_subdirectory(third_party)
+add_subdirectory(src)
+
+ament_package()
