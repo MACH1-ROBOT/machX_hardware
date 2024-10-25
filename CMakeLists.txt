@@ -13,6 +13,9 @@ find_package(OpenCV 4 REQUIRED)
 # Include OpenCV headers
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+# Incldue third party headers
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/)
+
 add_subdirectory(third_party)
 add_subdirectory(src)
 
