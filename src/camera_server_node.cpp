@@ -1,7 +1,5 @@
 #include "camera_server_node.h"
 
-constexpr int LUMINOSITY_PUB_TIMER_MS = 1000;
-
 CameraServerNode::CameraServerNode() : Node("camera_server_node"), Camera()
 {
     luminosityPub_ = this->create_publisher<std_msgs::msg::Float32>("luminosity_value", 10);

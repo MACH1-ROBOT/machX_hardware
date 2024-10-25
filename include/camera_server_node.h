@@ -4,6 +4,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float32.hpp>
 
+constexpr int LUMINOSITY_PUB_TIMER_MS = 1000;
+
 class CameraServerNode : public rclcpp::Node, protected camera_driver::Camera
 {
   public:
