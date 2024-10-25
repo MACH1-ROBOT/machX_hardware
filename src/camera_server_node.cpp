@@ -1,15 +1,22 @@
-#include "camera.h"
-#include <iostream>
-#include <rclcpp/rclcpp.hpp>
+#include "camera_server_node.h"
 
-class CameraServerNode : public rclcpp::Node
+constexpr int LUMINOSITY_PUB_TIMER_MS = 1000;
+
+CameraServerNode::CameraServerNode() : Node("camera_server_node"), Camera()
 {
-  public:
-    CameraServerNode() : Node("camera_server_node")
-    {
-        RCLCPP_INFO(this->get_logger(), "Hello, ROS 2");
-    }
-};
+    luminosityPub_ = this->create_publisher<std_msgs::msg::Float32>("luminosity_value", 10);
+    timer_ = this->create_wall_timer(std::chrono::milliseconds(LUMINOSITY_PUB_TIMER_MS),
+                                     std::bind(&CameraServerNode::publishLuminosityValue, this));
+    RCLCPP_INFO(this->get_logger(), "%s::Setting up camera server again.", __func__);
+}
+
+void CameraServerNode::publishLuminosityValue()
+{
+    auto luminosityMsg = std_msgs::msg::Float32();
+    luminosityMsg.data = luminosityVal;
+    luminosityPub_->publish(luminosityMsg);
+    luminosityVal++;
+}
 
 int main(int argc, char **argv)
 {
