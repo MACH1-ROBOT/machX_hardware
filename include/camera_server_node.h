@@ -11,13 +11,10 @@ class CameraServerNode : public rclcpp::Node, protected camera_driver::Camera
 {
   public:
     CameraServerNode();
-
     CameraServerNode(std::string name, std::string type, int index, int fps);
-
     ~CameraServerNode();
 
   private:
-    float luminosityVal = 0;
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr luminosityPub_;
     rclcpp::TimerBase::SharedPtr timer_;
 
