@@ -18,7 +18,7 @@ class CameraServerNode : public rclcpp::Node, protected camera_driver::Camera
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr luminosityPub_;
     rclcpp::TimerBase::SharedPtr timer_;
 
-    void InitializeCameraServer();
+    void InitializeServer();
     void Start();
     void Stop();
 };
