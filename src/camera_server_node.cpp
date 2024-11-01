@@ -1,5 +1,4 @@
 #include "camera_server_node.h"
-#include "camera_utils.h"
 
 CameraServerNode::CameraServerNode() : Node(CAMERA_SERVER_NODE_NAME), Camera()
 {
