@@ -1,7 +1,9 @@
 #pragma once
 #include "camera.h"
 #include "camera_utils.h"
+#include <cv_bridge/cv_bridge.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
 #include <std_msgs/msg/float32.hpp>
 
 constexpr int LUMINOSITY_PUB_TIMER_MS = 1000;
