@@ -15,8 +15,7 @@ target_link_libraries(${CAMERA_SERVER_EXE_NAME}
 
 ament_target_dependencies(${CAMERA_CLIENT_EXE_NAME}
     rclcpp
-    sensor_msgs
-    std_msgs)
+    sensor_msgs)
 target_link_libraries(${CAMERA_CLIENT_EXE_NAME}
     camera_driver
     ${OpenCV_LIBS})
