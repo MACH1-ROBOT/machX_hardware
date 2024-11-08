@@ -1,9 +1,10 @@
 #pragma once
 #include "camera.h"
 #include <rclcpp/rclcpp.hpp>
-#include <std_msgs/msg/float32.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
 
 constexpr char CAMERA_CLIENT_NODE_NAME[] = "camera_client_node";
+constexpr int CAMERA_FPS_MS = 33;
 
 class CameraClientNode : public rclcpp::Node, protected camera_driver::Camera
 {
@@ -12,8 +13,8 @@ class CameraClientNode : public rclcpp::Node, protected camera_driver::Camera
     ~CameraClientNode();
 
   private:
-    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr luminositySub_;
+    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr compressedImageSub_;
 
     void InitializeClient();
-    void LuminosityValueCB(std_msgs::msg::Float32::SharedPtr msg);
+    void CompressedImageCB(sensor_msgs::msg::CompressedImage::SharedPtr msg);
 };

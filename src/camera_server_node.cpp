@@ -46,7 +46,7 @@ void CameraServerNode::Start()
 
 void CameraServerNode::Stop()
 {
-    RCLCPP_INFO_ONCE(this->get_logger(), "%s()::Stopping server.", __func__);
+    RCLCPP_INFO(this->get_logger(), "%s()::Stopping server.", __func__);
     rclcpp::shutdown();
 }
 

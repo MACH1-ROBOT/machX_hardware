@@ -13,14 +13,20 @@ CameraClientNode::~CameraClientNode()
 void CameraClientNode::InitializeClient()
 {
     RCLCPP_INFO(this->get_logger(), "%s()::Setting up camera client.", __func__);
-    luminositySub_ = this->create_subscription<std_msgs::msg::Float32>(
-        "luminosity_value", 10,
-        std::bind(&CameraClientNode::LuminosityValueCB, this, std::placeholders::_1));
+
+    compressedImageSub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
+        "camera/image/compressed", 10,
+        std::bind(&CameraClientNode::CompressedImageCB, this, std::placeholders::_1));
 }
 
-void CameraClientNode::LuminosityValueCB(const std_msgs::msg::Float32::SharedPtr msg)
+void CameraClientNode::CompressedImageCB(sensor_msgs::msg::CompressedImage::SharedPtr msg)
 {
-    RCLCPP_INFO(this->get_logger(), "%s::Luminosity value - [%.2f]", __func__, msg->data);
+    cv::Mat frame = cv::imdecode(cv::Mat(msg->data), cv::IMREAD_COLOR);
+    // TODO: Use default duration parameter once camera driver version is updated.
+    if (!DisplayFrame(frame, CAMERA_FPS_MS))
+    {
+        RCLCPP_WARN(this->get_logger(), "%s()::Failed to display frame.", __func__);
+    }
 }
 
 int main(int argc, char **argv)

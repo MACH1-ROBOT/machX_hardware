@@ -7,14 +7,15 @@ add_executable(${CAMERA_CLIENT_EXE_NAME} ${CAMERA_CLIENT_EXE_SOURCES})
 ament_target_dependencies(${CAMERA_SERVER_EXE_NAME}
     cv_bridge
     rclcpp
-    std_msgs
-    sensor_msgs)
+    sensor_msgs
+    std_msgs)
 target_link_libraries(${CAMERA_SERVER_EXE_NAME}
         camera_driver
         ${OpenCV_LIBS})
 
 ament_target_dependencies(${CAMERA_CLIENT_EXE_NAME}
     rclcpp
+    sensor_msgs
     std_msgs)
 target_link_libraries(${CAMERA_CLIENT_EXE_NAME}
     camera_driver
