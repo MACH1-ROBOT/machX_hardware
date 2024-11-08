@@ -7,12 +7,18 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
+find_package(cv_bridge REQUIRED)
 find_package(OpenCV 4 REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
-# Include OpenCV headers
-include_directories(${OpenCV_INCLUDE_DIRS})
-
-ament_package()
+# Define module path for custom configuration files 
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(Executables)
 
 add_subdirectory(third_party)
+add_subdirectory(src)
+add_subdirectory(include)
+
+ament_package()

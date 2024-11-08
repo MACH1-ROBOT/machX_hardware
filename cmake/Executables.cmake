@@ -1,0 +1,2 @@
+set(CAMERA_SERVER_EXE_NAME camera_server_node)
+set(CAMERA_CLIENT_EXE_NAME camera_client_node)
