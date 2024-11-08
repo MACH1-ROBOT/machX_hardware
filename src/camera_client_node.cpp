@@ -15,7 +15,7 @@ void CameraClientNode::InitializeClient()
     RCLCPP_INFO(this->get_logger(), "%s()::Setting up camera client.", __func__);
 
     compressedImageSub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
-        "camera/image/compressed", 10,
+        "camera/image/compressed", 1,
         std::bind(&CameraClientNode::CompressedImageCB, this, std::placeholders::_1));
 }
 

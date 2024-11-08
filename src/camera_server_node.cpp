@@ -21,7 +21,7 @@ void CameraServerNode::InitializeServer()
     RCLCPP_INFO(this->get_logger(), "%s()::Setting up camera server.", __func__);
     luminosityPub_ = this->create_publisher<std_msgs::msg::Float32>("/luminosity_value", 10);
     imageCompressedPub_ =
-        this->create_publisher<sensor_msgs::msg::CompressedImage>("/camera/image/compressed", 10);
+        this->create_publisher<sensor_msgs::msg::CompressedImage>("/camera/image/compressed", 3);
 
     timer_ = this->create_wall_timer(std::chrono::milliseconds(CAMERA_FPS_MS),
                                      std::bind(&CameraServerNode::Start, this));
